@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Send Airport Push</title>
+</head>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
+<script src="http://bouil.github.io/angular-google-chart/ng-google-chart.js"></script>
+<script src="js/controllers/maincontroller.js"></script>
+<script src="js/services/service.js"></script>
+<link type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+
+<body>
+
+    <div ng-app="mainController" ng-controller="Hello">
+        <p>
+            <h1> Create and Send the Airport Push to the device</h1></p>
+        <br><br>
+
+        <form class="form-inline" role="form">
+            &nbsp&nbsp&nbsp<label for="imei">IMEI:</label>
+            <input type="imei" class="form-control" id="imei" ng-model="myVar" placeholder="Enter IMEI">
+        </form>
+
+        <p>
+            <h3>Select any one of the option for the aiport push</h3></p>
+
+        <div class="radio">
+            &nbsp&nbsp&nbsp<label><input type="radio" name="optradio" ng-model="radioValue" value="1">GeoFence Enter</label>
+        </div>
+        <div class="radio">
+            &nbsp&nbsp&nbsp<label><input type="radio" name="optradio" ng-model="radioValue" value="2">Allotment Zone Enter</label>
+        </div>
+        <div class="radio">
+            &nbsp&nbsp&nbsp<label><input type="radio" name="optradio" ng-model="radioValue" value="3">Allotment Zone Exit</label>
+        </div>
+        <div class="radio" class="checkbox right-checkbox">
+            &nbsp&nbsp&nbsp<label><input type="radio" name="optradio" ng-model="radioValue" value="4">GeoFence Exit</label>
+        </div>
+        <div class="radio">
+            &nbsp&nbsp&nbsp<label><input type="radio" name="optradio" ng-model="radioValue" value="5">Parking full</label>
+        </div>
+        <div class="radio">
+            &nbsp&nbsp&nbsp<label><input type="radio" name="optradio" ng-model="radioValue" value="6">Parking free</label>
+        </div>
+        <div class="radio">
+            &nbsp&nbsp&nbsp<label><input type="radio" name="optradio" ng-model="radioValue" value="7">Clearing Device from Airport Zone</label>
+        </div>
+        <div class="radio">
+            &nbsp&nbsp&nbsp<label><input type="radio" name="optradio" ng-model="radioValue" value="8">Heat Map Push</label>
+        </div>
+        <div class="radio">
+            &nbsp&nbsp&nbsp<label><input type="radio" name="optradio" ng-model="radioValue" value="9" ng-click="ShowPassport('Y')">DDD Push</label>
+        </div>
+
+        <div ng-show="radioValue == 8" id="dvPassport">
+            <div class="row">
+                <div class="form-group col-xs-2">
+                    <form class="form-inline" role="form">
+                        &nbsp&nbsp&nbsp<label for="imei">Delta Duration</label>
+                        &nbsp&nbsp&nbsp<input type="imei" display="in-line" class="form-control" id="imei" ng-model="myDeltaValue" placeholder="Enter Delta Value" ng-init="myDeltaValue='120'" ng-maxlength="5">
+                    </form>
+                </div>
+                <div class="form-group col-xs-2">
+                    <form class="form-inline" role="form">
+                        <label for="imei">Delta Collapse Duration</label>
+                        <input type="imei" class="form-control" id="imei" ng-model="myDeltacollapseValue" placeholder="Enter Delta Collapse" ng-init="myDeltacollapseValue='30'" ng-maxlength="5">
+                    </form>
+                </div>
+                <div class="form-group col-xs-2">
+                    <form class="form-inline" role="form">
+                        <label for="imei">Delta Threshold Duration</label>
+                        <input type="imei" class="form-control" id="imei" ng-model="mythresholdValue" placeholder="Enter Threshold Value" ng-init="mythresholdValue='10'" ng-maxlength="10">
+                    </form>
+                </div>
+                <div class="form-group col-xs-2">
+                    <form class="form-inline" role="form">
+                        <label for="imei">Title Color</label>
+                        <input type="imei" class="form-control" id="imei" ng-model="mytitlecolor" placeholder="Enter Title Color" ng-init="mytitlecolor='FFFFFF'" ng-maxlength="10">
+                    </form>
+                </div>
+                <div class="form-group col-xs-2">
+                    <form class="form-inline" role="form">
+                        <label for="imei">Background Color</label>
+                        <input type="imei" class="form-control" id="imei" ng-model="mybackgroundcolor" placeholder="Enter Background Color" ng-init="mybackgroundcolor='F5A623'" ng-maxlength="10">
+                    </form>
+                </div>
+                <div class="form-group col-xs-2">
+                    <form class="form-inline" role="form">
+                        <label for="imei">Action Text Color</label>
+                        <input type="imei" class="form-control" id="imei" ng-model="myactiontextcolor" placeholder="Enter Action Color" ng-init="myactiontextcolor='FFFFFF'" ng-maxlength="10">
+                    </form>
+                </div>
+                <div class="form-group col-xs-2">
+                    <form class="form-inline" role="form">
+                        <label for="imei">GeoHash</label>
+                        <input type="imei" class="form-control" id="imei" ng-model="mygeohashvalue" placeholder="Enter Geohash value" ng-init="mygeohashvalue='tdr1y'" ng-maxlength="10">
+                    </form>
+                </div>
+                <div class="form-group col-xs-2">
+                    <form class="form-inline" role="form">
+                        <label for="imei">radius</label>
+                        <input type="imei" class="form-control" id="imei" ng-model="myradiusvalue" placeholder="Enter radius Value" ng-init="myradiusvalue='500'" ng-maxlength="10">
+                    </form>
+                </div>
+            </div>
+        </div>
+        &nbsp&nbsp&nbsp<button type="button" class="btn btn-info btn-sm" ng-click="Submit(myVar,radioValue,myDeltaValue,myDeltacollapseValue,mythresholdValue,mytitlecolor,mybackgroundcolor,myactiontextcolor,mygeohashvalue,myradiusvalue)">Submit</button>
+
+        <p>&nbsp&nbsp&nbsp{{greetingeds.uuid}}</p>
+        <p>&nbsp&nbsp&nbsp{{greetingeds.message}}</p>
+
+    </div>
+
+</body>
+
+</html>

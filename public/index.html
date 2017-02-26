@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Create and Validate API</title>
+   </head>
+   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+   <!--<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>-->
+   <script src="http://bouil.github.io/angular-google-chart/ng-google-chart.js"></script>
+   <script src="js/controllers/maincontroller.js"></script>
+   <script src="js/services/service.js"></script>
+   <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-xeditable/0.4.0/css/xeditable.css" rel="stylesheet">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0/angular-mocks.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-xeditable/0.4.0/js/xeditable.js"></script>    
+   <!--<link type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />-->
+   <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" media="screen">
+   <body>
+      <ul class="nav nav-pills nav-stacked col-md-2">
+         <img src="ola-logo.jpg" class="img-circle" alt="Cinque Terre" width="200" height="136">
+         <br><br><br>
+         <li class="active"><a href="#tab_a" data-toggle="pill">Create and Validate API</a></li>
+         <li><a href="#tab_b" data-toggle="pill">Notification Inbox Push</a></li>
+         <li><a href="#tab_c" data-toggle="pill">Intrip Navigation Push</a></li>
+         <li><a href="#tab_d" data-toggle="pill">CreateBooking</a></li>
+      </ul>
+       <div ng-app="mainController" class="tab-content col-md-10">
+         <br><br><br>
+         <div class="tab-pane active" id="tab_a" ng-controller="Hello">
+            <div class="row input-append">
+               <div class="form-group col-xs-1">
+                  <form>
+                     <select class="form-control" id="sel1" ng-model="requesttype" ng-options="requesttype1.name for      requesttype1 in requesttypes track by requesttype1.name">
+                     </select> 
+                  </form>
+               </div>
+               <div class="form-group col-xs-8">
+                  <form>
+                     <input type="text" class="form-control" ng-change="Evaluate(url)" ng-model="url" placeholder="Enter request URL">    
+                  </form>
+               </div>
+               <div class="form-group col-xs-1">
+                  <form>
+                     <button ng-click="toggleCustom()" type="button" class="btn btn-success">Params</button>    
+                  </form>
+               </div>
+               <div class="form-group col-xs-1">
+                  <form>
+                     <button type="button" class="btn btn-primary" ng-click="Send(requesttype,url)">Send</button>    
+                  </form>
+               </div>
+            </div>
+            <div ng-hide="custom" class="row">
+               <div class="col-sm-4 col-sm-6 col-sm-6 col-md-offset-1 column">
+                  <table class="table table-hover table-condensed">
+                     <thead>
+                        <tr>
+                           <th>Key</th>
+                           <th>Value</th>
+                           <th>Actions</th>
+                        </tr>
+                     </thead>
+                     <tr ng-repeat="user in users">
+                        <td>
+                           <!-- editable username (text with validation) -->
+                           <span editable-text="user.key" e-name="key" e-form="rowform" e-required>
+                           {{ user.key || 'empty' }}
+                           </span>
+                        </td>
+                        <td>
+                           <!-- editable username (text with validation) -->
+                           <span editable-text="user.value" e-name="value" e-form="rowform" e-required>
+                           {{ user.value || 'empty' }}
+                           </span>
+                        </td>
+                        <td style="white-space: nowrap">
+                           <!-- form -->
+                           <form editable-form name="rowform" onbeforesave="saveUser($data, user.key)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == user">
+                              <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+                              save
+                              </button>
+                              <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                              cancel
+                              </button>
+                           </form>
+                           <div class="buttons" ng-show="!rowform.$visible">
+                              <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                              <button class="btn btn-danger" ng-click="removeUser($index)">del</button>
+                           </div>
+                        </td>
+                     </tr>
+                  </table>
+                  <button class="btn btn-default" ng-click="addUser()">Add row</button>
+                  <button class="btn btn-default" ng-click="deleteUser()">Delete All Rows</button>
+               </div>
+            </div>
+            <hr>
+            <ul class="nav nav-pills">
+               <li class="active"><a href="#tab_e" data-toggle="pill">Auth</a></li>
+               <li><a href="#tab_f" data-toggle="pill">Headers</a></li>
+               <li><a href="#tab_g" data-toggle="pill">Body</a></li>
+            </ul>
+            <hr>
+            <div class="tab-content col-md-10">
+               <div class="tab-pane active" id="tab_e">
+                  <br>
+                  <form class="form-horizontal">
+                     <div class="form-group">
+                        <label class="control-label col-sm-2" for="email" >Type:</label>
+                        <div class="col-sm-6">
+                           <select class="form-control" ng-model="authtype" ng-init="authtype ='NoAuth'">
+                              <option ng-option value="NoAuth">NoAuthorization</option>
+                              <option ng-option value="BasicAuth">BasicAuthorization</option>
+                           </select>
+                        </div>
+                     </div>
+                     <div class="well col-sm-9" ng-if="authtype !='NoAuth'">
+                        <div class="form-group">
+                           <label class="control-label col-sm-2">Username:</label>
+                           <div class="col-sm-6">
+                              <input type="text" class="form-control" ng-model="username" placeholder="Enter Username....">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <label class="control-label col-sm-2" for="pwd">Password:</label>
+                           <div class="col-sm-6"> 
+                              <input type="{{inputType}}" id="pwd" class="form-control" ng-model="password" id="pwd" placeholder="Enter password....">
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <div class="col-sm-offset-2 col-sm-6">
+                              <div class="checkbox">
+                                 <input type="checkbox" id="checkbox" ng-model="passwordCheckbox" ng-click="hideShowPassword()" />
+                                 <label for="checkbox" ng-if="passwordCheckbox">Hide password</label>
+                                 <label for="checkbox" ng-if="!passwordCheckbox">Show password</label> 
+                              </div>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <div class="col-sm-offset-2 col-sm-6">
+                              <button type="submit" ng-click="Addauth(username,password)" class="btn btn-default">Update Request</button>
+                           </div>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+               <div class="tab-pane" id="tab_f">
+                  <div class="col-sm-4 col-sm-6 col-sm-6 col-md-offset-1 column">
+                     <table class="table table-hover table-condensed">
+                        <thead>
+                           <tr>
+                              <th>Key</th>
+                              <th>Value</th>
+                              <th>Actions</th>
+                           </tr>
+                        </thead>
+                        <tr ng-repeat="header in headers">
+                           <td>
+                              <!-- editable username (text with validation) -->
+                              <span editable-text="header.key" e-name="key" e-form="rowform" e-required>
+                              {{ header.key || 'empty' }}
+                              </span>
+                           </td>
+                           <td>
+                              <!-- editable username (text with validation) -->
+                              <span editable-text="header.value" e-name="value" e-form="rowform" e-required>
+                              {{ header.value || 'empty' }}
+                              </span>
+                           </td>
+                           <td style="white-space: nowrap">
+                              <!-- form -->
+                              <form editable-form name="rowform" onbeforesave="saveUser1($data, header.key)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == header">
+                                 <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+                                 save
+                                 </button>
+                                 <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                                 cancel
+                                 </button>
+                              </form>
+                              <div class="buttons" ng-show="!rowform.$visible">
+                                 <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                                 <button class="btn btn-danger" ng-click="removeUser1($index)">del</button>
+                              </div>
+                           </td>
+                        </tr>
+                     </table>
+                     <button class="btn btn-default" ng-click="addUser1()">Add row</button>
+                     <button class="btn btn-default" ng-click="deleteUser1()">Delete All Rows</button>
+                  </div>
+               </div>
+               <div class="tab-pane" id="tab_g" >
+                  <form>
+                     <label class="radio-inline">
+                     <input type="radio" name="optradio" value="1" ng-model="radiovalue">form-data
+                     </label>
+                     <label class="radio-inline">
+                     <input type="radio" name="optradio" value="2" ng-model="radiovalue">x-www-form-urlencoded
+                     </label>
+                     <label class="radio-inline">
+                     <input type="radio" name="optradio" value="3" ng-model="radiovalue">raw
+                     </label>
+                     <label class="radio-inline">
+                     <input type="radio" name="optradio" value="4" ng-model="radiovalue">binary
+                     </label>
+                     <label class="radio-inline">
+                        <select class="form-control" id="sel1" ng-model="contenttype" ng-init="contenttype ='text'" ng-if ="radiovalue == '3'">
+                           <option ng-option value="text">Text</option>
+                           <option ng-option value="json">JSON</option>
+                           <option ng-option value="xml">XML</option>
+                           <option ng-option value="html">HTML</option>
+                        </select>
+                     </label>
+                  </form>
+                  <div class="col-sm-6 col-sm-6 col-sm-6 col-md-offset-1 column" ng-if="radiovalue == '1' || radiovalue == '2'">
+                     <table class="table table-hover table-condensed">
+                        <thead>
+                           <tr>
+                              <th>Key</th>
+                              <th>Value</th>
+                              <th>Actions</th>
+                           </tr>
+                        </thead>
+                        <tr ng-repeat="header in headers">
+                           <td>
+                              <!-- editable username (text with validation) -->
+                              <span editable-text="header.key" e-name="key" e-form="rowform" e-required>
+                              {{ header.key || 'empty' }}
+                              </span>
+                           </td>
+                           <td>
+                              <!-- editable username (text with validation) -->
+                              <span editable-text="header.value" e-name="value" e-form="rowform" e-required>
+                              {{ header.value || 'empty' }}
+                              </span>
+                           </td>
+                           <td style="white-space: nowrap">
+                              <!-- form -->
+                              <form editable-form name="rowform" onbeforesave="saveUser1($data, header.key)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == header">
+                                 <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+                                 save
+                                 </button>
+                                 <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                                 cancel
+                                 </button>
+                              </form>
+                              <div class="buttons" ng-show="!rowform.$visible">
+                                 <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                                 <button class="btn btn-danger" ng-click="removeUser1($index)">del</button>
+                              </div>
+                           </td>
+                        </tr>
+                     </table>
+                     <button class="btn btn-default" ng-click="addUser1()">Add row</button>
+                     <button class="btn btn-default" ng-click="deleteUser1()">Delete All Rows</button>
+                  </div>
+                  <br>
+                  <div class="container" ng-if="radiovalue == '3'" >
+                     <form>
+                        <div class="form-group">
+                           <textarea ng-model="$parent.textModel" class="form-control" rows="10"></textarea>
+                        </div>
+                     </form>
+                  </div>
+                  <div class="container" ng-if="radiovalue == '4'">
+                     <!--<label class="btn btn-default btn-file">Choose Files <input type="file" style="display: none;"></label>-->
+                     <input type="file" id="file" name="file"/>
+                     <button ng-click="fileupload()">Add</button>
+                     <p>{{data}}</p>
+                  </div><br>
+               </div>
+                <div class="container" ng-show="showdiv=='true'">
+                    <div ng-show="finderloader"><img class="center-block" src="loading.gif"></div>
+               <form>
+                  <div class="form-group">
+                     <textarea readonly ng-model="myTextarea" class="form-control" rows="20" id="comment">
+                      </textarea>
+                  </div>
+               </form>
+            </div>
+            </div>
+         </div>
+         <div class="tab-pane" id="tab_b" ng-controller="Hello">    
+         </div>
+         <div class="tab-pane" id="tab_c">
+         </div>
+         <div class="tab-pane" id="tab_d" ng-controller="Hello">
+         </div>
+      </div>
+      <!-- tab content -->
+   </body>
+</html>
